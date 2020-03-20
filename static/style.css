@@ -10,10 +10,16 @@ h1{
     background-color: darkslategrey;
 }
 .carousel-inner > .carousel-item >img{
-    min-height : 300px;
-    max-height : 600px;
-    width : 100%;
+    height: 600px;
+    width: 100%;
+    background-size: contain;
+    background-attachment: fixed;
 }
-.carousel-caption{
-    color: darkslategrey;
+.carousel-caption > h1{
+    font-size: 60px;
+    color: lightcyan;
+}
+body{
+    background-color: lightgrey;
+    margin: 0;
 }
