@@ -1,0 +1,19 @@
+h1{
+    font-family: 'Ruda', sans-serif;
+    font-size: 40px;
+    color: white;
+}
+.title-box{
+    width: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: darkslategrey;
+}
+.carousel-inner > .carousel-item >img{
+    min-height : 300px;
+    max-height : 600px;
+    width : 100%;
+}
+.carousel-caption{
+    color: darkslategrey;
+}
