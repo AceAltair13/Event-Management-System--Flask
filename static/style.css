@@ -1,19 +1,5 @@
-h1{
-    font-family: 'Ruda', sans-serif;
-    font-size: 40px;
-    color: white;
-}
-.title-box{
-    width: 100%;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    background-color: darkslategrey;
-}
 .carousel-inner > .carousel-item >img{
     height: 600px;
-    width: 100%;
-    background-size: contain;
-    background-attachment: fixed;
 }
 .carousel-caption > h1{
     font-size: 60px;
@@ -22,4 +8,7 @@ h1{
 body{
     background-color: lightgrey;
     margin: 0;
+}
+.carousel{
+    margin-top: 0px;
 }
