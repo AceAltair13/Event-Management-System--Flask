@@ -8,7 +8,11 @@ def index():
 
 @app.route('/login')
 def login():
-   return "This is a post"
+   return render_template('login.html')
+
+@app.route('/register')
+def method_name():
+   return render_template('register.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
