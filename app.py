@@ -34,9 +34,9 @@ registered_events=[
 def index():
     return render_template('index.html')
 
-@app.route('/login/dashboard/')
-def dashboard():
-    return render_template('dashboard.html',events=registered_events)
+@app.route('/users/<username>')
+def dashboard(username):
+    return render_template('dashboard.html',events=registered_events,name=username)
 
 @app.route('/login')
 def login():
