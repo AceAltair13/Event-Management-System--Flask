@@ -1,3 +1,5 @@
+# This is sample text to be merged into master branch
+
 from flask import Flask,render_template
 app = Flask(__name__)
 
