@@ -8,29 +8,30 @@
 <div class="container">
 <br>
 <br>
+<h1>Welcome, {{ name }}</h1>
 <br>
 <div>
-    <h1 style="display:inline">All Events Organised</h1> 
+    <h1 style="display:inline">All Events Organised</h1>
+    <a class=" btn btn-danger float-right" style="margin-left: 5px;" href='#'> Logout </a>
     <a class=" btn btn-success float-right" href='/home'> Home </a>
 </div>
 
 <hr>
-    
-    {% for event in events %}
-        <br>
-        <h2>{{ event.event_name }}</h2>
-        
-        {% if event.organiser %}
-            <h3>Organised By: {{event.organiser}} on {{event.date_booked}} </h3> 
-        {% else %}
-            <small>Organised by: Unknown on {{event.date}} </small>
-        {% endif %}
-        
-        <h3>Event Location:{{event.event_location}}</h3>
-        <h3>Event Type: {{event.event_type}}</h3>
 
-    <br>
-        
-    {% endfor%}
-</div>   
+{% for event in events %}
+<br>
+<h2>{{ event.event_name }}</h2>
+
+{% if event.organiser %}
+<h3>Organised By: {{event.organiser}} on {{event.date_booked}} </h3>
+{% else %}
+<small>Organised by: Unknown on {{event.date}} </small>
+{% endif %}
+
+<h3>Event Location:{{event.event_location}}</h3>
+<h3>Event Type: {{event.event_type}}</h3>
+<br>
+<hr>
+{% endfor%}
+</div>
 {% endblock %}
