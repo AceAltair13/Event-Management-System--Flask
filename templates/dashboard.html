@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block body %}
+
 <div class="container">
 <br>
 <br>
@@ -12,7 +13,7 @@
 <br>
 <div>
     <h1 style="display:inline">All Events Organised</h1>
-    <a class=" btn btn-danger float-right" style="margin-left: 5px;" href='#'> Logout </a>
+    <a class=" btn btn-danger float-right" style="margin-left: 5px;" href='/logout'> Logout </a>
     <a class=" btn btn-success float-right" href='/home'> Home </a>
 </div>
 
@@ -25,7 +26,7 @@
 {% if event.organiser %}
 <h3>Organised By: {{event.organiser}} on {{event.date_booked}} </h3>
 {% else %}
-<small>Organised by: Unknown on {{event.date}} </small>
+<h3>Organised by: Unknown on {{event.date}} </h3>
 {% endif %}
 
 <h3>Event Location:{{event.event_location}}</h3>
