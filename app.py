@@ -46,5 +46,16 @@ def login():
 def register():
    return render_template('register.html')
 
+@app.route('/event/<eventname>')
+def event(eventname):
+    if eventname == 'birthday':
+        return render_template('birthday.html')
+    elif eventname == 'anniversary':
+        return render_template('anniversary.html')
+    elif eventname == 'others':
+        return render_template('other_event.html')
+    else:
+        return render_template('index.html')
+
 if __name__ == '__main__':
     app.run(debug=True)
