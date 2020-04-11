@@ -46,7 +46,7 @@ def login():
 def register():
    return render_template('register.html')
 
-@app.route('/event/<eventname>')
+@app.route('/<eventname>')
 def event(eventname):
     if eventname == 'birthday':
         return render_template('birthday.html')
