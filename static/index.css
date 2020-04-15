@@ -75,6 +75,10 @@ body {
   /* Space out the Bootstrap <hr> more */
 }
 
+.featurette-image{
+  border-radius: 25px;
+}
+
 /* Thin out the marketing headings */
 .featurette-heading {
   font-weight: 300;
