@@ -6,7 +6,7 @@
     color: lightcyan;
 }
 body{
-    background-color: whitesmoke;
+    background-image: url('bg.jpg');
     margin: 0;
 }
 .carousel{
