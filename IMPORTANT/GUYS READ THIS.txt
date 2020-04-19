@@ -1,0 +1,7 @@
+Flask-MysqlDB gives error while installing directly via pip.
+So you have to install this wheel first. (mysqlclient.whl)
+I have included that file here, do the following 
+Right click in an empty area, do open PowerShell here or CMD here
+Type the following command:
+pip install <TAB>
+File name should appear, let it install and then try "pip install flask-mysqldb" again and it should install. 
