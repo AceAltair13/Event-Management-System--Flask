@@ -49,7 +49,7 @@ def index():
 
 @app.route('/users/<username>',methods = ['GET','POST'])
 def dashboard(username):
-    if 'loggedin' in session:
+    if 'loggedin' in session and username == session['username']:
         return render_template('dashboard.html', events=registered_events, name=username)
     return render_template('/login.html')
 
