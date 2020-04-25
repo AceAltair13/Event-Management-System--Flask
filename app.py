@@ -1,7 +1,6 @@
 from flask import Flask, render_template,request,redirect,session,url_for,flash
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
-import re
 from datetime import datetime
 
 app = Flask(__name__)
@@ -13,6 +12,7 @@ app.config['MYSQL_PASSWORD'] = 'yash'
 app.config['MYSQL_DB'] = 'flaskapp'
 
 mysql = MySQL(app)
+
 
 registered_events = [
     {
@@ -58,19 +58,19 @@ def dashboard(username):
 def login():
         msg = ''
         if request.method == 'POST':
-            email = request.form['email']
+            username = request.form['username']
             password = request.form['password']
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute("SELECT * FROM users WHERE email = %s AND password = MD5(%s)", (email, password))
+            cursor.execute("SELECT * FROM users WHERE username = %s AND password = MD5(%s)",(username, password))
             account = cursor.fetchone()
             
             if account:
                 last_login = datetime.now()
                 session['loggedin'] = True
                 session['password'] = account['password']
-                session['email'] = account['email']
+                session['username'] = account['username']
                 login_time = datetime.now()
-                cursor.execute("UPDATE users SET last_login = %s where email=%s",(last_login,session['email']))
+                cursor.execute("UPDATE users SET last_login = %s where username=%s",(last_login,session['username']))
                 mysql.connection.commit()
                 cursor.close()
                 return render_template('dashboard.html')
@@ -86,11 +86,17 @@ def register():
         username = userDetails['username']
         password = userDetails['password']
         email = userDetails['email']
-        cur = mysql.connection.cursor()
-        cur.execute("INSERT INTO users(username,password,email) VALUES(%s,MD5(%s),%s)",
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
+        account = cursor.fetchone()
+
+        if account:
+            return "<h1>Username already exists</h1>"
+        else:
+            cursor.execute("INSERT INTO users(username,password,email) VALUES(%s,MD5(%s),%s)",
                     (username,password, email))
-        mysql.connection.commit()
-        cur.close()
+            mysql.connection.commit()
+            cursor.close()
         return redirect(url_for('login'))
     return render_template('register.html')
 
