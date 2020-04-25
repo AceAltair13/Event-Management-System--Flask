@@ -1,26 +1,39 @@
-from flask import Flask,render_template
-app = Flask(__name__)
+from flask import Flask, render_template,request,redirect,session,url_for,flash
+from flask_mysqldb import MySQL
+import MySQLdb.cursors
+import re
+from datetime import datetime
 
-registered_events=[
+app = Flask(__name__)
+app.secret_key = 'secret key'
+
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = 'yash'
+app.config['MYSQL_DB'] = 'flaskapp'
+
+mysql = MySQL(app)
+
+registered_events = [
     {
-        'event_name':"Yash's Birthday",
+        'event_name': "Yash's Birthday",
         'event_type': "Birthday",
         'event_location': "Kalyan",
-        'organiser':"Yash",
+        'organiser': "Yash",
         'date_booked': "2-Feb-2019",
     },
     {
-        'event_name':"Throwback Party",
+        'event_name': "Throwback Party",
         'event_type': "Party",
         'event_location': "Mumbai",
-        'organiser':"Tirth",
+        'organiser': "Tirth",
         'date_booked': "2-July-2019",
     },
     {
-        'event_name':"XYZ's Anniversary",
+        'event_name': "XYZ's Anniversary",
         'event_type': "Anniversary",
         'event_location': "Ahmedabad",
-        'organiser':"XYZ",
+        'organiser': "XYZ",
         'date_booked': "2-May-2019",
     }
 
@@ -28,23 +41,65 @@ registered_events=[
 ]
 
 
-
 @app.route('/')
 @app.route('/home')
 def index():
     return render_template('index.html')
 
-@app.route('/users/<username>')
+
+@app.route('/users/<username>',methods = ['GET','POST'])
 def dashboard(username):
-    return render_template('dashboard.html',events=registered_events,name=username)
+    if 'loggedin' in session:
+        return render_template('dashboard.html', events=registered_events, name=username)
+    return render_template('/login.html')
 
-@app.route('/login')
+
+@app.route('/login',methods = ['GET','POST'])
 def login():
-   return render_template('login.html')
+        msg = ''
+        if request.method == 'POST':
+            email = request.form['email']
+            password = request.form['password']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute("SELECT * FROM users WHERE email = %s AND password = MD5(%s)", (email, password))
+            account = cursor.fetchone()
+            
+            if account:
+                last_login = datetime.now()
+                session['loggedin'] = True
+                session['password'] = account['password']
+                session['email'] = account['email']
+                login_time = datetime.now()
+                cursor.execute("UPDATE users SET last_login = %s where email=%s",(last_login,session['email']))
+                mysql.connection.commit()
+                cursor.close()
+                return render_template('dashboard.html')
+            else:
+                return "<h1>Invalid username or password</h1>"
+        return render_template('login.html')
 
-@app.route('/register')
+
+@app.route('/register',methods = ['GET','POST'])
 def register():
-   return render_template('register.html')
+    if request.method == "POST":
+        userDetails = request.form
+        username = userDetails['username']
+        password = userDetails['password']
+        email = userDetails['email']
+        cur = mysql.connection.cursor()
+        cur.execute("INSERT INTO users(username,password,email) VALUES(%s,MD5(%s),%s)",
+                    (username,password, email))
+        mysql.connection.commit()
+        cur.close()
+        return redirect(url_for('login'))
+    return render_template('register.html')
+
+@app.route('/logout')
+def logout():
+    session.pop('loggedin', None)
+    session.pop('id', None)
+    session.pop('email', None)
+    return redirect(url_for('login'))
 
 @app.route('/<eventname>')
 def event(eventname):

@@ -8,11 +8,11 @@
 <div class="container">
     <br>
     <br>
-    <h1>Welcome, {{ name }}</h1>
+    <h1>Welcome, {{ session['email'] }}</h1>
     <br>
     <div>
         <h1 style="display:inline">All Events Organised</h1>
-        <a class=" btn btn-danger float-right" style="margin-left: 5px;" href='#'> Logout </a>
+        <a class=" btn btn-danger float-right" style="margin-left: 5px;" href='/logout'> Logout </a>
         <a class=" btn btn-success float-right" href='/home'> Home </a>
     </div>
 
