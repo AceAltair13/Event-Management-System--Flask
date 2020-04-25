@@ -52,7 +52,7 @@ def event(eventname):
         return render_template('birthday.html')
     elif eventname == 'anniversary':
         return render_template('anniversary.html')
-    elif eventname == 'others':
+    elif eventname == 'other_event':
         return render_template('other_event.html')
     else:
         return render_template('index.html')
