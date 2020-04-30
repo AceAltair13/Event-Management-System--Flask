@@ -8,7 +8,7 @@ app.secret_key = 'secret key'
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = "tirth"
+app.config['MYSQL_PASSWORD'] = 'tirth'
 app.config['MYSQL_DB'] = 'project'
 
 mysql = MySQL(app)
@@ -70,8 +70,8 @@ def login():
         if account:
             last_login = datetime.now()
             session['loggedin'] = True
-            session['username'] = account['Username']
-            session['password'] = account['Password']
+            session['username'] = account['username']
+            session['password'] = account['password']
             cursor.execute(
                 "UPDATE users SET last_login = %s where username=%s",
                 (last_login, session['username'])
