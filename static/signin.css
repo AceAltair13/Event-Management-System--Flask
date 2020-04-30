@@ -44,6 +44,6 @@ body {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
 }
-.login_message{
+.login_message, .register_message{
   color: red;
 }
