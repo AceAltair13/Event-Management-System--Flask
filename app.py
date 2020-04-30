@@ -1,4 +1,4 @@
-from flask import Flask, render_template,request,redirect,session,url_for,flash
+from flask import Flask, render_template, request, redirect, session, url_for
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 from datetime import datetime
@@ -8,8 +8,8 @@ app.secret_key = 'secret key'
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'yash'
-app.config['MYSQL_DB'] = 'flaskapp'
+app.config['MYSQL_PASSWORD'] = "tirth"
+app.config['MYSQL_DB'] = 'project'
 
 mysql = MySQL(app)
 
@@ -47,58 +47,77 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/users/<username>',methods = ['GET','POST'])
+@app.route('/users/<username>', methods=['GET', 'POST'])
 def dashboard(username):
     if 'loggedin' in session and username == session['username']:
         return render_template('dashboard.html', events=registered_events, name=username)
     return render_template('/login.html')
 
 
-@app.route('/login',methods = ['GET','POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
-        msg = ''
-        if request.method == 'POST':
-            username = request.form['username']
-            password = request.form['password']
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute("SELECT * FROM users WHERE username = %s AND password = MD5(%s)",(username, password))
-            account = cursor.fetchone()
-            
-            if account:
-                last_login = datetime.now()
-                session['loggedin'] = True
-                session['password'] = account['password']
-                session['username'] = account['username']
-                login_time = datetime.now()
-                cursor.execute("UPDATE users SET last_login = %s where username=%s",(last_login,session['username']))
-                mysql.connection.commit()
-                cursor.close()
-                return render_template('dashboard.html')
-            else:
-                return "<h1>Invalid username or password</h1>"
-        return render_template('login.html')
+    msg = ''
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(
+            "SELECT * FROM users WHERE username = %s AND password = MD5(%s)",
+            (username, password)
+        )
+        account = cursor.fetchone()
+
+        if account:
+            last_login = datetime.now()
+            session['loggedin'] = True
+            session['username'] = account['Username']
+            session['password'] = account['Password']
+            cursor.execute(
+                "UPDATE users SET last_login = %s where username=%s",
+                (last_login, session['username'])
+            )
+            mysql.connection.commit()
+            cursor.close()
+            return render_template('dashboard.html')
+        else:
+            msg = "Invalid Username or Password!"
+            return render_template("login.html", msg=msg)
+    return render_template('login.html')
 
 
-@app.route('/register',methods = ['GET','POST'])
+@app.route('/register', methods=['GET', 'POST'])
 def register():
+    rmsg = ""
     if request.method == "POST":
         userDetails = request.form
         username = userDetails['username']
         password = userDetails['password']
         email = userDetails['email']
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM users WHERE username = %s', (username,))
-        account = cursor.fetchone()
-
-        if account:
-            return "<h1>Username already exists</h1>"
+        repass = userDetails['reenterPassword']
+        if password != repass:
+            rmsg = "Password does not match!"
+            return render_template("register.html", rmsg=rmsg)
         else:
-            cursor.execute("INSERT INTO users(username,password,email) VALUES(%s,MD5(%s),%s)",
-                    (username,password, email))
-            mysql.connection.commit()
-            cursor.close()
-        return redirect(url_for('login'))
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute(
+                "SELECT * FROM users WHERE username = %s",
+                [username]
+            )
+            account = cursor.fetchone()
+
+            if account:
+                rmsg = "Username already exists!"
+                return render_template("register.html", rmsg=rmsg)
+            else:
+                cursor.execute(
+                    "INSERT INTO users(username,password,email) VALUES(%s,MD5(%s),%s)",
+                    (username, password, email)
+                )
+                mysql.connection.commit()
+                cursor.close()
+            return redirect(url_for('login'))
     return render_template('register.html')
+
 
 @app.route('/logout')
 def logout():
@@ -106,6 +125,7 @@ def logout():
     session.pop('id', None)
     session.pop('email', None)
     return redirect(url_for('login'))
+
 
 @app.route('/<eventname>')
 def event(eventname):
@@ -117,6 +137,7 @@ def event(eventname):
         return render_template('other_event.html')
     else:
         return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
