@@ -13,7 +13,6 @@ app.config['MYSQL_DB'] = 'project'
 
 mysql = MySQL(app)
 
-
 registered_events = [
     {
         'event_name': "Yash's Birthday",
@@ -40,18 +39,31 @@ registered_events = [
 
 ]
 
+events = {
+    'birthday': 'birthday banner',
+    'anniversary': 'anniversary banner',
+    'other': 'other banner'
+}
+
 
 @app.route('/')
 @app.route('/home')
 def index():
-    return render_template('index.html')
+    if 'loggedin' in session:
+        return render_template(
+            'index.html',
+            session=session['loggedin'],
+            name=session['username']
+        )
+    else:
+        return render_template('index.html', session=False)
 
 
 @app.route('/users/<username>', methods=['GET', 'POST'])
 def dashboard(username):
     if 'loggedin' in session and username == session['username']:
         return render_template('dashboard.html', events=registered_events, name=username)
-    return render_template('/login.html')
+    return render_template('login.html')
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -78,7 +90,11 @@ def login():
             )
             mysql.connection.commit()
             cursor.close()
-            return render_template('dashboard.html')
+            return render_template(
+                'index.html',
+                session=session['loggedin'],
+                name=session['username']
+            )
         else:
             msg = "Invalid Username or Password!"
             return render_template("login.html", msg=msg)
@@ -124,18 +140,17 @@ def logout():
     session.pop('loggedin', None)
     session.pop('id', None)
     session.pop('email', None)
-    return redirect(url_for('login'))
+    return redirect(url_for('index'))
 
 
 @app.route('/<eventname>')
-def event(eventname):
-    if eventname == 'birthday':
-        return render_template('birthday.html')
-    elif eventname == 'anniversary':
-        return render_template('anniversary.html')
-    elif eventname == 'other_event':
-        return render_template('other_event.html')
-    else:
+def book_event(eventname):
+    try:
+        if 'loggedin' in session:
+            return render_template('booking.html', event=events[eventname])
+        else:
+            return render_template('login.html')
+    except KeyError:
         return render_template('index.html')
 
 
