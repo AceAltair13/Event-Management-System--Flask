@@ -1,39 +1,47 @@
 {% extends 'base.html' %}
 
 {% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
 <title>Dashboard</title>
 {% endblock %}
 
 {% block body %}
 <div class="container">
+  <br>
+  <br>
+  <h1>Welcome, {{ session['username'] }}</h1>
+  <br>
+  <div>
+    <h1 style="display:inline">Your Booked Events:</h1>
+    <a class=" btn btn-danger float-right" style="margin-left: 5px;" href='/logout'> Logout </a>
+    <a class=" btn btn-success float-right" href='/home' style="margin-left: 5px;"> Home </a>
+  </div>
+
+  <hr>
+  {% if not event %}
+
+  {% else %}
+
+  {% for event in events %}
+
+  <div class="events">
     <br>
+    <h2>{{ event.event_name }}</h2>
+    {% if event.organiser %}
+    <h3>Organised By: {{event.organiser}} on {{event.date_booked}} </h3>
+    {% else %}
+    <small>Organised by: Unknown on {{event.date}} </small>
+    {% endif %}
+
+    <h3>Event Location:{{event.event_location}}</h3>
+    <h3>Event Type: {{event.event_type}}</h3>
     <br>
-    <h1>Welcome, {{ session['username'] }}</h1>
+  </div>
+  <div>
     <br>
-    <div>
-        <h1 style="display:inline">All Events Organised</h1>
-        <a class=" btn btn-danger float-right" style="margin-left: 5px;" href='/logout'> Logout </a>
-        <a class=" btn btn-success float-right" href='/home'> Home </a>
-    </div>
-
-    <hr>
-
-    {% for event in events %}
-
-    <div style="border-radius: 25px; background: #fff; padding-left: 30px; padding-right: 30px;">
-        <br>
-        <h2>{{ event.event_name }}</h2>
-        {% if event.organiser %}
-        <h3>Organised By: {{event.organiser}} on {{event.date_booked}} </h3>
-        {% else %}
-        <small>Organised by: Unknown on {{event.date}} </small>
-        {% endif %}
-
-        <h3>Event Location:{{event.event_location}}</h3>
-        <h3>Event Type: {{event.event_type}}</h3>
-        <br>
-    </div>
-    <div><br></div>
-    {% endfor%}
+  </div>
 </div>
+  {% endfor%}
+{% endif %}
+
 {% endblock %}

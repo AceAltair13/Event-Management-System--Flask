@@ -13,6 +13,8 @@ app.config['MYSQL_DB'] = 'project'
 
 mysql = MySQL(app)
 
+# TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age;
+
 registered_events = [
     {
         'event_name': "Yash's Birthday",
@@ -34,27 +36,15 @@ registered_events = [
         'event_location': "Ahmedabad",
         'organiser': "XYZ",
         'date_booked': "2-May-2019",
-    }
-
-
+    },
 ]
-
-events = {
-    'birthday': 'birthday banner',
-    'anniversary': 'anniversary banner',
-    'other': 'other banner'
-}
 
 
 @app.route('/')
 @app.route('/home')
 def index():
     if 'loggedin' in session:
-        return render_template(
-            'index.html',
-            session=session['loggedin'],
-            name=session['username']
-        )
+        return render_template('index.html', session=session['loggedin'], name=session['username'])
     else:
         return render_template('index.html', session=False)
 
@@ -74,8 +64,7 @@ def login():
         password = request.form['password']
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute(
-            "SELECT * FROM users WHERE username = %s AND password = MD5(%s)",
-            (username, password)
+            "SELECT * FROM users WHERE username = %s AND password = MD5(%s)", (username, password)
         )
         account = cursor.fetchone()
 
@@ -86,14 +75,12 @@ def login():
             session['password'] = account['password']
             cursor.execute(
                 "UPDATE users SET last_login = %s where username=%s",
-                (last_login, session['username'])
+                (last_login, session['username']),
             )
             mysql.connection.commit()
             cursor.close()
             return render_template(
-                'index.html',
-                session=session['loggedin'],
-                name=session['username']
+                'index.html', session=session['loggedin'], name=session['username']
             )
         else:
             msg = "Invalid Username or Password!"
@@ -115,10 +102,7 @@ def register():
             return render_template("register.html", rmsg=rmsg)
         else:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            cursor.execute(
-                "SELECT * FROM users WHERE username = %s",
-                [username]
-            )
+            cursor.execute("SELECT * FROM users WHERE username = %s", [username])
             account = cursor.fetchone()
 
             if account:
@@ -127,7 +111,7 @@ def register():
             else:
                 cursor.execute(
                     "INSERT INTO users(username,password,email) VALUES(%s,MD5(%s),%s)",
-                    (username, password, email)
+                    (username, password, email),
                 )
                 mysql.connection.commit()
                 cursor.close()
@@ -144,10 +128,15 @@ def logout():
 
 
 @app.route('/<eventname>')
-def book_event(eventname):
+def book_event(eventname: str):
     try:
         if 'loggedin' in session:
-            return render_template('booking.html', event=events[eventname])
+            return render_template(
+                'booking.html',
+                session=session['loggedin'],
+                name=session['username'],
+                event=eventname.capitalize(),
+            )
         else:
             return render_template('login.html')
     except KeyError:

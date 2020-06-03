@@ -2,9 +2,85 @@
 
 {% block head %}
 <title>Book Event</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='booking.css') }}">
 {% endblock head %}
 
 {% block body %}
-<h1>Event Booking</h1>
-<p>{{ event }}</p>
+<div class="jumbotron" style="background-color: orange;">
+  <h1 class="display-1">
+    <center>
+      {{ event }} Event Booking
+    </center>
+  </h1>
+</div>
+<div class="container">
+  <div id="edit-form" class='details'>
+    <h1>
+      Personal Details:
+    </h1>
+    <form action="" method="POST">
+      <div class="form-group">
+        <label for="text">First Name</label>
+        <input id="text" name="text" type="text" required="required" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="text1">Middle Name</label>
+        <input id="text1" name="text1" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="text2">Last Name</label>
+        <input id="text2" name="text2" type="text" required="required" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="text3">Date of Birth</label>
+        <input id="text3" name="text3" placeholder="DD-MM-YYYY" type="text" required="required" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="text4">Contact 1</label>
+        <input id="text4" name="text4" type="text" class="form-control" required="required">
+      </div>
+      <div class="form-group">
+        <label for="text5">Contact 2</label>
+        <input id="text5" name="text5" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label for="text6">Contact 3</label>
+        <input id="text6" name="text6" type="text" class="form-control">
+      </div>
+      <div class="form-group">
+        <label>Gender</label>
+        <div>
+          <div class="custom-controls-stacked">
+            <div class="custom-control custom-radio">
+              <input name="radio" id="radio_0" type="radio" class="custom-control-input" value="male"
+                required="required">
+              <label for="radio_0" class="custom-control-label">Male</label>
+            </div>
+          </div>
+          <div class="custom-controls-stacked">
+            <div class="custom-control custom-radio">
+              <input name="radio" id="radio_1" type="radio" class="custom-control-input" value="female"
+                required="required">
+              <label for="radio_1" class="custom-control-label">Female</label>
+            </div>
+          </div>
+          <div class="custom-controls-stacked">
+            <div class="custom-control custom-radio">
+              <input name="radio" id="radio_2" type="radio" class="custom-control-input" value="other"
+                required="required">
+              <label for="radio_2" class="custom-control-label">Other</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="textarea">Address</label>
+        <textarea id="textarea" name="textarea" cols="40" rows="5" class="form-control"></textarea>
+      </div>
+      <div class="form-group">
+        <button name="submit" type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
 {% endblock body %}
