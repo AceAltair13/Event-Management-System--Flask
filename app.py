@@ -4,7 +4,7 @@ import MySQLdb.cursors
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'secret key'
+app.secret_key = 'acbdsabfasbfk1j3b431123jb21321kk3k4ob'
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
@@ -39,6 +39,26 @@ registered_events = [
     },
 ]
 
+# Pricing formula: max_people*pricing[tier n]['person_cost'] + pricing['tier n']['base']
+
+pricing = {
+    'tier 1': {
+        'base': 15000,
+        'person': 1500
+    },
+    'tier 2': {
+        'base': 30000,
+        'person': 3750,
+    },
+    'tier 3': {
+        'base': 75000,
+        'person': 7500,
+    },
+    'tier 4': {
+        'base': 150000,
+        'person': 10500
+    },
+}
 
 @app.route('/')
 @app.route('/home')
@@ -58,7 +78,6 @@ def dashboard(username):
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    msg = ''
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
@@ -80,11 +99,13 @@ def login():
             mysql.connection.commit()
             cursor.close()
             return render_template(
-                'index.html', session=session['loggedin'], name=session['username']
+                'index.html',
+                session=session['loggedin'],
+                name=session['username'],
+                msg="Login Successful!",
             )
         else:
-            msg = "Invalid Username or Password!"
-            return render_template("login.html", msg=msg)
+            return render_template("login.html", msg="Invalid Username or Password!")
     return render_template('login.html')
 
 
@@ -127,7 +148,7 @@ def logout():
     return redirect(url_for('index'))
 
 
-@app.route('/<eventname>')
+@app.route('/<eventname>', methods=['GET', 'POST'])
 def book_event(eventname: str):
     try:
         if 'loggedin' in session:

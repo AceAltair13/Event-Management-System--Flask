@@ -18,30 +18,40 @@
   </div>
 
   <hr>
-  {% if not event %}
+  {% if not events %}
 
   {% else %}
-
   {% for event in events %}
 
   <div class="events">
     <br>
-    <h2>{{ event.event_name }}</h2>
+    <h2>
+      {{ event.event_name }}
+    </h2>
     {% if event.organiser %}
-    <h3>Organised By: {{event.organiser}} on {{event.date_booked}} </h3>
+    <h3>
+      Organised By: {{event.organiser}} on {{event.date_booked}}
+    </h3>
     {% else %}
-    <small>Organised by: Unknown on {{event.date}} </small>
+    <small>
+      Organised by: Unknown on {{event.date}}
+    </small>
     {% endif %}
-
-    <h3>Event Location:{{event.event_location}}</h3>
-    <h3>Event Type: {{event.event_type}}</h3>
-    <br>
-  </div>
-  <div>
+    <h3>
+      Event Location:{{event.event_location}}
+    </h3>
+    <h3>
+      Event Type: {{event.event_type}}
+    </h3>
     <br>
   </div>
 </div>
-  {% endfor%}
+<div>
+  <br>
+</div>
+</div>
+{% endfor%}
+
 {% endif %}
 
 {% endblock %}
