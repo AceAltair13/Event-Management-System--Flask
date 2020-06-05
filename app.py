@@ -15,6 +15,8 @@ mysql = MySQL(app)
 
 # TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age;
 
+events_available = ['birthday', 'anniversary', 'other']
+
 registered_events = [
     {
         'event_name': "Yash's Birthday",
@@ -39,26 +41,15 @@ registered_events = [
     },
 ]
 
-# Pricing formula: max_people*pricing[tier n]['person_cost'] + pricing['tier n']['base']
+# Pricing formula: max_people*pricing[tier n]['person'] + pricing['tier n']['base']
 
 pricing = {
-    'tier 1': {
-        'base': 15000,
-        'person': 1500
-    },
-    'tier 2': {
-        'base': 30000,
-        'person': 3750,
-    },
-    'tier 3': {
-        'base': 75000,
-        'person': 7500,
-    },
-    'tier 4': {
-        'base': 150000,
-        'person': 10500
-    },
+    'tier 1': {'base': 15000, 'person': 1500},
+    'tier 2': {'base': 30000, 'person': 3750},
+    'tier 3': {'base': 75000, 'person': 7500},
+    'tier 4': {'base': 150000, 'person': 10500},
 }
+
 
 @app.route('/')
 @app.route('/home')
@@ -150,7 +141,7 @@ def logout():
 
 @app.route('/<eventname>', methods=['GET', 'POST'])
 def book_event(eventname: str):
-    try:
+    if eventname in events_available:
         if 'loggedin' in session:
             return render_template(
                 'booking.html',
@@ -159,9 +150,9 @@ def book_event(eventname: str):
                 event=eventname.capitalize(),
             )
         else:
-            return render_template('login.html')
-    except KeyError:
-        return render_template('index.html')
+            return redirect(url_for('login'))
+    else:
+        return redirect(url_for('index'))
 
 
 if __name__ == '__main__':
