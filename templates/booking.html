@@ -2,169 +2,119 @@
 
 {% block head %}
 <title>Book Event</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='booking.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='personal.css') }}">
 {% endblock head %}
 
 {% block body %}
 <div>
-  <h1>
-    <center>
-      {{ event }} Event Booking
-    </center>
-  </h1>
+  <div class="jumbotron jumbotron-fluid">
+    <div class="container">
+      <h1 class="display-3"><center>{{ event }} Event Booking Page</center></h1>
+    </div>
+  </div>
 </div>
-<div class="container">
-  <div id="edit-form" class='details'>
-    <h1>
-      Personal Details:
-    </h1>
-    <form action="" method="POST">
-      <div class="form-group row">
-        <label for="fname" class="col-3 col-form-label">First Name</label>
-        <div class="col-9">
-          <input id="fname" name="fname" type="text" class="form-control" required="required">
-        </div>
+<div id="booking_form" class='details' style="margin-top: -33px;">
+  <h1>
+    Event Details:
+  </h1>
+  <form action="" method="POST">
+    {% if event == 'Birthday' %}
+    <div class="form-group row">
+      <label for="ename" class="col-3 col-form-label">Birthday of</label>
+      <div class="col-9">
+        <input id="ename" name="ename" type="text" class="form-control"
+          required="required">
       </div>
-      <div class="form-group row">
-        <label for="mname" class="col-3 col-form-label">Middle Name</label>
-        <div class="col-9">
-          <input id="mname" name="mname" type="text" class="form-control">
-        </div>
+    </div>
+    {% elif event == 'Anniversary' %}
+    <div class="form-group row">
+      <label for="ename" class="col-3 col-form-label">Name of Person 1</label>
+      <div class="col-9">
+        <input id="ename" name="ename" type="text" class="form-control"
+          required="required">
       </div>
-      <div class="form-group row">
-        <label for="lname" class="col-3 col-form-label">Last Name</label>
-        <div class="col-9">
-          <input id="lname" name="lname" type="text" class="form-control" required="required">
-        </div>
+    </div>
+    <div class="form-group row">
+      <label for="ename" class="col-3 col-form-label">Name of Person 2</label>
+      <div class="col-9">
+        <input id="ename" name="ename" type="text" class="form-control"
+          required="required">
       </div>
-      <div class="form-group row">
-        <label for="dob" class="col-3 col-form-label">Date Of Birth</label>
-        <div class="col-9">
-          <input id="dob" name="dob" type="date" class="form-control" required="required" onkeydown="return false">
-        </div>
+    </div>
+    {% elif event == 'Other' %}
+    <div class="form-group row">
+      <label for="ename" class="col-3 col-form-label">Event Name</label>
+      <div class="col-9">
+        <input id="ename" name="ename" type="text" class="form-control"
+          required="required">
       </div>
-      <div class="form-group row">
-        <label for="contact1" class="col-3 col-form-label">Contact Details</label>
-        <div class="col-9">
-          <input id="contact1" name="contact1" placeholder="Mobile Number 1" type="text" required="required"
-            class="form-control">
-        </div>
+    </div>
+    {% endif %}
+    <div class="form-group row">
+      <label for="textarea" class="col-3 col-form-label">Venue</label>
+      <div class="col-9">
+        <textarea id="textarea" name="textarea" cols="40" rows="3"
+          class="form-control"
+          required="required"></textarea>
       </div>
-      <div class="form-group row">
-        <label class="col-3"></label>
-        <div class="col-9">
-          <input id="contact2" name="contact2" placeholder="Mobile Number 2" type="text" class="form-control">
-        </div>
+    </div>
+    <div class="form-group row">
+      <label for="tier" class="col-3 col-form-label">Event Tier</label>
+      <div class="col-9">
+        <select id="tier" name="tier" required="required"
+          class="custom-select">
+          <option value="tier1">Tier 1 (Base Price: {{ t1_base }} | Per
+            person: {{ t1_per }})</option>
+          <option value="tier2">Tier 2 (Base Price: {{ t2_base }} | Per
+            person: {{ t2_per }})</option>
+          <option value="tier3">Tier 3 (Base Price: {{ t3_base }} | Per
+            person: {{ t3_per }})</option>
+          <option value="tier4">Tier 4 (Base Price: {{ t4_base }} | Per
+            person: {{ t4_per }})</option>
+        </select>
       </div>
-      <div class="form-group row">
-        <label for="contact3" class="col-3 col-form-label"></label>
-        <div class="col-9">
-          <input id="contact3" name="contact3" placeholder="Landline" type="text" class="form-control">
-        </div>
+    </div>
+    <div class="form-group row">
+      <label for="max" class="col-3 col-form-label">Max Capacity</label>
+      <div class="col-9">
+        <input id="max" name="max" placeholder="Number of People"
+          type="number" min='1' max='1000'
+          class="form-control">
       </div>
-      <div class="form-group row">
-        <label class="col-3">Gender</label>
-        <div class="col-9">
-          <div class="custom-control custom-radio custom-control-inline">
-            <input name="gender" id="gender_0" type="radio" class="custom-control-input" value="male"
-              required="required">
-            <label for="gender_0" class="custom-control-label">Male</label>
-          </div>
-          <div class="custom-control custom-radio custom-control-inline">
-            <input name="gender" id="gender_1" type="radio" class="custom-control-input" value="female"
-              required="required">
-            <label for="gender_1" class="custom-control-label">Female</label>
-          </div>
-          <div class="custom-control custom-radio custom-control-inline">
-            <input name="gender" id="gender_2" type="radio" class="custom-control-input" value="other"
-              required="required">
-            <label for="gender_2" class="custom-control-label">Other</label>
-          </div>
-        </div>
+    </div>
+    <div class="form-group row">
+      <label for="edate" class="col-3 col-form-label">Event Date</label>
+      <div class="col-9">
+        <input id="edate" name="edate" type="date" class="form-control"
+          onkeydown="return false">
       </div>
-      <div class="form-group row">
-        <label for="address" class="col-3 col-form-label">Residential Address</label>
-        <div class="col-9">
-          <textarea id="address" name="address" cols="40" rows="3" class="form-control" required="required"></textarea>
-        </div>
+    </div>
+    <div class="form-group row">
+      <label for="requests" class="col-3 col-form-label">Special Requests</label>
+      <div class="col-9">
+        <textarea id="requests" name="requests" cols="40" rows="3"
+          aria-describedby="requestsHelpBlock"
+          class="form-control"></textarea>
+        <span id="requestsHelpBlock" class="form-text text-muted">Optional</span>
       </div>
-      <div class="form-group row">
-        <div class="offset-3 col-9">
-          <button name="submit" type="submit" class="btn btn-primary">Submit</button>
-        </div>
+    </div>
+    <div class="form-group row">
+      <div class="offset-3 col-9">
+        <button name="price" class="btn btn-danger" data-target="#price_check"
+          data-toggle="collapse">Check
+          Price</button>
+        <button name="submit" type="submit" class="btn btn-primary">Submit</button>
       </div>
-    </form>
-  </div>
-  <div id="edit-form" class='details' style="margin-top: 15px;">
-    <h1>
-      Event Details:
-    </h1>
-    <form action="" method="POST">
-      {% if event == 'Other' %}
-      <div class="form-group row">
-        <label for="ename" class="col-3 col-form-label">Event Name</label>
-        <div class="col-9">
-          <input id="ename" name="ename" type="text" class="form-control" required="required">
-        </div>
-      </div>
-      {% endif %}
-      <div class="form-group row">
-        <label for="textarea" class="col-3 col-form-label">Venue</label>
-        <div class="col-9">
-          <textarea id="textarea" name="textarea" cols="40" rows="3" class="form-control"
-            required="required"></textarea>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="tier" class="col-3 col-form-label">Event Tier</label>
-        <div class="col-9">
-          <select id="tier" name="tier" required="required" class="custom-select">
-            <option value="tier1">Tier 1 (Base Price: {{ t1_base }} | Per person: {{ t1_per }})</option>
-            <option value="tier2">Tier 2 (Base Price: {{ t2_base }} | Per person: {{ t2_per }})</option>
-            <option value="tier3">Tier 3 (Base Price: {{ t3_base }} | Per person: {{ t3_per }})</option>
-            <option value="tier4">Tier 4 (Base Price: {{ t4_base }} | Per person: {{ t4_per }})</option>
-
-          </select>
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="max" class="col-3 col-form-label">Max Capacity</label>
-        <div class="col-9">
-          <input id="max" name="max" placeholder="Number of People" type="number" min='1' max='1000'
-            class="form-control">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="edate" class="col-3 col-form-label">Event Date</label>
-        <div class="col-9">
-          <input id="edate" name="edate" type="date" class="form-control" onkeydown="return false">
-        </div>
-      </div>
-      <div class="form-group row">
-        <label for="requests" class="col-3 col-form-label">Special Requests</label>
-        <div class="col-9">
-          <textarea id="requests" name="requests" cols="40" rows="3" aria-describedby="requestsHelpBlock"
-            class="form-control"></textarea>
-          <span id="requestsHelpBlock" class="form-text text-muted">Optional</span>
-        </div>
-      </div>
+    </div>
+    <div class="collapse" id="price_check">
       <div class="form-group row">
         <div class="offset-3 col-9">
-          <button name="price" class="btn btn-danger" data-target="#price_check" data-toggle="collapse">Check
-            Price</button>
-          <button name="submit" type="submit" class="btn btn-primary">Submit</button>
+          <p>
+            Total price will be: {{ price }}
+          </p>
         </div>
       </div>
-      <div class="collapse" id="price_check">
-        <div class="form-group row">
-          <div class="offset-3 col-9">
-            <p>
-              Total price will be: {{ price }}
-            </p>
-          </div>
-        </div>
-      </div>
-    </form>
-  </div>
+    </div>
+  </form>
 </div>
 {% endblock body %}
