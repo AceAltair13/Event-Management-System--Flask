@@ -18,30 +18,6 @@ mysql = MySQL(app)
 
 events_available = ['birthday', 'anniversary', 'other']
 
-registered_events = [
-    {
-        'event_name': "Yash's Birthday",
-        'event_type': "Birthday",
-        'event_location': "Kalyan",
-        'organiser': "Yash",
-        'date_booked': "2-Feb-2019",
-    },
-    {
-        'event_name': "Throwback Party",
-        'event_type': "Party",
-        'event_location': "Mumbai",
-        'organiser': "Tirth",
-        'date_booked': "2-July-2019",
-    },
-    {
-        'event_name': "XYZ's Anniversary",
-        'event_type': "Anniversary",
-        'event_location': "Ahmedabad",
-        'organiser': "XYZ",
-        'date_booked': "2-May-2019",
-    },
-]
-
 # Pricing formula: max_people*pricing[tier n]['person'] + pricing['tier n']['base']
 
 pricing = {
@@ -158,7 +134,7 @@ def register():
             rmsg = "Password does not match!"
             return render_template("register.html", rmsg=rmsg)
         else:
-            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor = mysql.connection.cursor()
             cursor.execute("SELECT * FROM users WHERE username = %s", [username])
             account = cursor.fetchone()
 
