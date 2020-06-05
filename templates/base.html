@@ -18,7 +18,7 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-dark bg-dark">
+        <nav class="navbar fixed-top navbar-dark bg-dark">
             <a class="navbar-brand" href='/'>
                 <span class="material-icons">
                     spa
@@ -65,10 +65,12 @@
                 </ul>
             </div>
         </nav>
+        <div>
+            {% block body %}
 
-        {% block body %}
+            {% endblock body %}
+        </div>
 
-        {% endblock body %}
 
         <footer class="page-footer font-small bg-dark">
             <div class="footer text-center py-3" style="color: white;
