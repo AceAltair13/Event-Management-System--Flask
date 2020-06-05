@@ -167,9 +167,9 @@ def book_event(eventname: str):
                 t3_base=pricing[eventname]['tier 3']['base'],
                 t4_base=pricing[eventname]['tier 4']['base'],
                 t1_per=pricing[eventname]['tier 1']['person'],
-                t2_per=pricing[eventname]['tier 1']['person'],
-                t3_per=pricing[eventname]['tier 1']['person'],
-                t4_per=pricing[eventname]['tier 1']['person'],
+                t2_per=pricing[eventname]['tier 2']['person'],
+                t3_per=pricing[eventname]['tier 3']['person'],
+                t4_per=pricing[eventname]['tier 4']['person'],
             )
         else:
             return redirect(url_for('login'))
@@ -177,10 +177,18 @@ def book_event(eventname: str):
         return redirect(url_for('index'))
 
 
+@app.route('/users/personal', methods=['GET', 'POST'])
+def personal():
+    if 'loggedin' in session:
+        return render_template('personal.html')
+    else:
+        return redirect(url_for('login'))
+
+
 if __name__ == '__main__':
     app.run(debug=True)
 
 # SELECT *, TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age
 # from personal WHERE pid =
-# (SELECT pid from has WHERE uid = 
+# (SELECT pid from has WHERE uid =
 # ( SELECT uid from users WHERE username = session['username']))
