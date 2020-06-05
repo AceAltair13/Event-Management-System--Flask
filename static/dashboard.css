@@ -1,6 +1,8 @@
 .events {
     border-radius: 25px;
-    background: #fff; 
+    background: linear-gradient(to top, white, whitesmoke);
     padding-left: 30px; 
     padding-right: 30px;
+    border: solid;
+    border-color: darkgray;
 }

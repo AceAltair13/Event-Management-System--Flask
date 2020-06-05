@@ -44,10 +44,24 @@ registered_events = [
 # Pricing formula: max_people*pricing[tier n]['person'] + pricing['tier n']['base']
 
 pricing = {
-    'tier 1': {'base': 15000, 'person': 1500},
-    'tier 2': {'base': 30000, 'person': 3750},
-    'tier 3': {'base': 75000, 'person': 7500},
-    'tier 4': {'base': 150000, 'person': 10500},
+    'birthday': {
+        'tier 1': {'base': 7500, 'person': 750},
+        'tier 2': {'base': 10000, 'person': 1000},
+        'tier 3': {'base': 12500, 'person': 1250},
+        'tier 4': {'base': 17000, 'person': 1550},
+    },
+    'anniversary': {
+        'tier 1': {'base': 9000, 'person': 1000},
+        'tier 2': {'base': 12000, 'person': 1300},
+        'tier 3': {'base': 15000, 'person': 1600},
+        'tier 4': {'base': 20000, 'person': 1900},
+    },
+    'other': {
+        'tier 1': {'base': 8000, 'person': 875},
+        'tier 2': {'base': 11000, 'person': 1150},
+        'tier 3': {'base': 14000, 'person': 1400},
+        'tier 4': {'base': 18500, 'person': 1700},
+    },
 }
 
 
@@ -148,6 +162,14 @@ def book_event(eventname: str):
                 session=session['loggedin'],
                 name=session['username'],
                 event=eventname.capitalize(),
+                t1_base=pricing[eventname]['tier 1']['base'],
+                t2_base=pricing[eventname]['tier 2']['base'],
+                t3_base=pricing[eventname]['tier 3']['base'],
+                t4_base=pricing[eventname]['tier 4']['base'],
+                t1_per=pricing[eventname]['tier 1']['person'],
+                t2_per=pricing[eventname]['tier 1']['person'],
+                t3_per=pricing[eventname]['tier 1']['person'],
+                t4_per=pricing[eventname]['tier 1']['person'],
             )
         else:
             return redirect(url_for('login'))
@@ -157,3 +179,8 @@ def book_event(eventname: str):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+# SELECT *, TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age
+# from personal WHERE pid =
+# (SELECT pid from has WHERE uid = 
+# ( SELECT uid from users WHERE username = session['username']))

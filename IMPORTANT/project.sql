@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 05, 2020 at 12:26 PM
+-- Generation Time: Jun 05, 2020 at 01:47 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.5
 
@@ -88,7 +88,7 @@ CREATE TABLE `personal` (
   `lname` varchar(255) NOT NULL,
   `dob` date NOT NULL,
   `gender` varchar(20) NOT NULL,
-  `address` int(11) NOT NULL
+  `address` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -110,7 +110,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`uid`, `username`, `email`, `password`, `last_login`) VALUES
-(1, 'ABC', 'abc@xyz.com', 'e99a18c428cb38d5f260853678922e03', '2020-06-05 10:22:10');
+(1, 'ABC', 'abc@xyz.com', 'e99a18c428cb38d5f260853678922e03', '2020-06-05 11:35:18');
 
 --
 -- Indexes for dumped tables
