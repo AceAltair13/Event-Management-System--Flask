@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 05, 2020 at 01:47 PM
+-- Generation Time: Jun 05, 2020 at 09:14 PM
 -- Server version: 10.4.11-MariaDB
 -- PHP Version: 7.4.5
 
@@ -34,6 +34,13 @@ CREATE TABLE `books` (
   `person2` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `books`
+--
+
+INSERT INTO `books` (`uid`, `eid`, `person1`, `person2`) VALUES
+(1, 1, 'Epsilon Gamma', NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -46,6 +53,13 @@ CREATE TABLE `contact` (
   `contact2` decimal(10,0) DEFAULT NULL,
   `contact3` decimal(10,0) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `contact`
+--
+
+INSERT INTO `contact` (`pid`, `contact1`, `contact2`, `contact3`) VALUES
+(1, '9924161231', '1231231221', '12312434');
 
 -- --------------------------------------------------------
 
@@ -64,6 +78,13 @@ CREATE TABLE `event` (
   `especial` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `event`
+--
+
+INSERT INTO `event` (`eid`, `etype`, `edate`, `etier`, `ecost`, `evenue`, `emax_people`, `especial`) VALUES
+(1, 'Birthday', '2020-06-27', 3, 35000, 'Sunrays Hall, Santacruz (W), Mumbai', 34, 'Theme of decoration should be blue.');
+
 -- --------------------------------------------------------
 
 --
@@ -74,6 +95,13 @@ CREATE TABLE `has` (
   `uid` int(11) DEFAULT NULL,
   `pid` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `has`
+--
+
+INSERT INTO `has` (`uid`, `pid`) VALUES
+(1, 1);
 
 -- --------------------------------------------------------
 
@@ -90,6 +118,13 @@ CREATE TABLE `personal` (
   `gender` varchar(20) NOT NULL,
   `address` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `personal`
+--
+
+INSERT INTO `personal` (`pid`, `fname`, `mname`, `lname`, `dob`, `gender`, `address`) VALUES
+(1, 'Alpha', 'Beta', 'Gamma', '2020-06-01', 'Male', 'Mumbai, Maharashtra, India');
 
 -- --------------------------------------------------------
 
@@ -110,7 +145,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`uid`, `username`, `email`, `password`, `last_login`) VALUES
-(1, 'ABC', 'abc@xyz.com', 'e99a18c428cb38d5f260853678922e03', '2020-06-05 11:35:18');
+(1, 'ABC', 'abc@xyz.com', 'e99a18c428cb38d5f260853678922e03', '2020-06-05 18:12:45'),
+(2, 'XYZ', 'xyz@abc.com', '613d3b9c91e9445abaeca02f2342e5a6', '2020-06-05 13:53:52');
 
 --
 -- Indexes for dumped tables
@@ -162,19 +198,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `event`
 --
 ALTER TABLE `event`
-  MODIFY `eid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `eid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `personal`
 --
 ALTER TABLE `personal`
-  MODIFY `pid` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `pid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Constraints for dumped tables
