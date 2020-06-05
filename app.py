@@ -10,6 +10,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'project'
+app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
 
@@ -77,7 +78,37 @@ def index():
 @app.route('/users/<username>', methods=['GET', 'POST'])
 def dashboard(username):
     if 'loggedin' in session and username == session['username']:
-        return render_template('dashboard.html', events=registered_events, name=username)
+        cursor = mysql.connection.cursor()
+        cursor.execute('''
+            SELECT p.*, TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age, c.*
+            from personal p NATURAL JOIN contact c WHERE pid =
+            (SELECT pid from has WHERE uid =
+            ( SELECT uid from users WHERE username = %s)) 
+            '''
+            ,[session['username']]
+        )
+        personal_details = cursor.fetchone()
+        cursor.execute('''
+            SELECT COUNT(eid) as count FROM books WHERE uid = 
+            (SELECT uid FROM users WHERE username = %s)
+            ''', [session['username']]
+        )
+        count_event = cursor.fetchone()
+        cursor.execute('''
+            SELECT e.*, b.* FROM event e NATURAL JOIN books b WHERE eid =
+            (SELECT eid FROM books WHERE uid = 
+            (SELECT uid FROM users WHERE username = %s ))
+            ''', [session['username']]
+        )
+        event_details = cursor.fetchall()
+        # return '<h1>' + str(personal_details) + '</h1>'
+        return render_template(
+            'dashboard.html',
+            name=username,
+            pdata=personal_details,
+            cn=count_event,
+            events=event_details
+            )
     return render_template('login.html')
 
 
@@ -157,6 +188,14 @@ def logout():
 def book_event(eventname: str):
     if eventname in events_available:
         if 'loggedin' in session:
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute(
+                "SELECT pid FROM has WHERE uid = (SELECT uid from users where username = %s)",
+                [session['username']],
+            )
+            per_details = cursor.fetchone()
+            if not per_details:
+                return redirect(url_for('personal'))
             return render_template(
                 'booking.html',
                 session=session['loggedin'],
@@ -177,18 +216,17 @@ def book_event(eventname: str):
         return redirect(url_for('index'))
 
 
-@app.route('/users/personal', methods=['GET', 'POST'])
+@app.route('/personal', methods=['GET', 'POST'])
 def personal():
     if 'loggedin' in session:
-        return render_template('personal.html')
+        return render_template(
+            'personal.html',
+            session=session['loggedin'],
+            name=session['username'],
+        )
     else:
         return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-# SELECT *, TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age
-# from personal WHERE pid =
-# (SELECT pid from has WHERE uid =
-# ( SELECT uid from users WHERE username = session['username']))
