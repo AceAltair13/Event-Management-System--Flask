@@ -8,7 +8,7 @@ app.secret_key = 'acbdsabfasbfk1j3b431123jb21321kk3k4ob'
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_PASSWORD'] = 'yash'
 app.config['MYSQL_DB'] = 'project'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
@@ -195,6 +195,22 @@ def book_event(eventname: str):
 @app.route('/personal', methods=['GET', 'POST'])
 def personal():
     if 'loggedin' in session:
+        if request.method == "POST":
+            firstname = request.form['fname']
+            middlename = request.form['mname']
+            lastname = request.form['lname']
+            DOB = request.form['dob']
+            contact1 = request.form['contact1']
+            contact2 = request.form['contact2']
+            landline = request.form['contact3']
+            gender = request.form['gender']
+            address = request.form['address']
+            cursor = mysql.connection.cursor()
+            cursor.execute("INSERT INTO personal(fname,mname,lname,dob,contact1,contact2,contact3,gender,address) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)",(firstname,middlename,lastname,DOB,contact1,contact2,landline,gender,address),)
+            mysql.connection.commit()
+            cursor.close()
+
+
         return render_template(
             'personal.html',
             session=session['loggedin'],
