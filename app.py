@@ -22,22 +22,22 @@ events_available = ['birthday', 'anniversary', 'other']
 
 pricing = {
     'birthday': {
-        'tier 1': {'base': 7500, 'person': 750},
-        'tier 2': {'base': 10000, 'person': 1000},
-        'tier 3': {'base': 12500, 'person': 1250},
-        'tier 4': {'base': 17000, 'person': 1550},
+        'tier1': {'base': 7500, 'person': 750},
+        'tier2': {'base': 10000, 'person': 1000},
+        'tier3': {'base': 12500, 'person': 1250},
+        'tier4': {'base': 17000, 'person': 1550},
     },
     'anniversary': {
-        'tier 1': {'base': 9000, 'person': 1000},
-        'tier 2': {'base': 12000, 'person': 1300},
-        'tier 3': {'base': 15000, 'person': 1600},
-        'tier 4': {'base': 20000, 'person': 1900},
+        'tier1': {'base': 9000, 'person': 1000},
+        'tier2': {'base': 12000, 'person': 1300},
+        'tier3': {'base': 15000, 'person': 1600},
+        'tier4': {'base': 20000, 'person': 1900},
     },
     'other': {
-        'tier 1': {'base': 8000, 'person': 875},
-        'tier 2': {'base': 11000, 'person': 1150},
-        'tier 3': {'base': 14000, 'person': 1400},
-        'tier 4': {'base': 18500, 'person': 1700},
+        'tier1': {'base': 8000, 'person': 875},
+        'tier2': {'base': 11000, 'person': 1150},
+        'tier3': {'base': 14000, 'person': 1400},
+        'tier4': {'base': 18500, 'person': 1700},
     },
 }
 
@@ -77,7 +77,6 @@ def dashboard(username):
             ''', [session['username']]
         )
         event_details = cursor.fetchall()
-        # return '<h1>' + str(personal_details) + '</h1>'
         return render_template(
             'dashboard.html',
             name=username,
@@ -162,6 +161,41 @@ def logout():
 
 @app.route('/<eventname>', methods=['GET', 'POST'])
 def book_event(eventname: str):
+    if request.method == 'POST':
+        ev = request.form
+        if eventname == 'birthday':
+            person1 = ev['person1']
+            etype = 'Birthday'
+        elif eventname == 'anniversary':
+            person1 = ev['person1']
+            person2 = ev['person2']
+            etype = 'Anniversary'
+        else:
+            etype = ev['etype']
+        venue = ev['venue']
+        tier = ev['tier']
+        max_people = ev['max']
+        date = ev['edate']
+        requests = ev['requests']
+        cost = int(max_people)*pricing[eventname][tier]['person'] + pricing[eventname][tier]['base']
+        if tier == 'tier1':
+            tier = 1
+        elif tier == 'tier2':
+            tier = 2
+        elif tier == 'tier3':
+            tier = 3
+        elif tier == 'tier4':
+            tier = 4
+        cursor = mysql.connection.cursor()
+        cursor.execute('''
+            INSERT INTO event(etype, edate, etier, ecost, evenue, emax_people, especial)
+            VALUES(%s,%s,%s,%s,%s,%s,%s)
+            ''', (etype, date, tier, cost, venue, max_people, requests)
+        )
+        mysql.connection.commit()
+        cursor.close()
+        return 'Event Booked!' #Temporary
+
     if eventname in events_available:
         if 'loggedin' in session:
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -177,14 +211,14 @@ def book_event(eventname: str):
                 session=session['loggedin'],
                 name=session['username'],
                 event=eventname.capitalize(),
-                t1_base=pricing[eventname]['tier 1']['base'],
-                t2_base=pricing[eventname]['tier 2']['base'],
-                t3_base=pricing[eventname]['tier 3']['base'],
-                t4_base=pricing[eventname]['tier 4']['base'],
-                t1_per=pricing[eventname]['tier 1']['person'],
-                t2_per=pricing[eventname]['tier 2']['person'],
-                t3_per=pricing[eventname]['tier 3']['person'],
-                t4_per=pricing[eventname]['tier 4']['person'],
+                t1_base=pricing[eventname]['tier1']['base'],
+                t2_base=pricing[eventname]['tier2']['base'],
+                t3_base=pricing[eventname]['tier3']['base'],
+                t4_base=pricing[eventname]['tier4']['base'],
+                t1_per=pricing[eventname]['tier1']['person'],
+                t2_per=pricing[eventname]['tier2']['person'],
+                t3_per=pricing[eventname]['tier3']['person'],
+                t4_per=pricing[eventname]['tier4']['person'],
             )
         else:
             return redirect(url_for('login'))
@@ -202,7 +236,6 @@ def personal():
         )
     else:
         return redirect(url_for('login'))
-
 
 if __name__ == '__main__':
     app.run(debug=True)
