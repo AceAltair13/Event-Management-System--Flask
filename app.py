@@ -4,21 +4,17 @@ import MySQLdb.cursors
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'acbdsabfasbfk1j3b431123jb21321kk3k4ob'
+app.secret_key = '231ad3242e231b2132b214034bbca3'
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = 'yash'
+app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'project'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
 mysql = MySQL(app)
 
-# TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age;
-
 events_available = ['birthday', 'anniversary', 'other']
-
-# Pricing formula: max_people*pricing[tier n]['person'] + pricing['tier n']['base']
 
 pricing = {
     'birthday': {
@@ -55,26 +51,31 @@ def index():
 def dashboard(username):
     if 'loggedin' in session and username == session['username']:
         cursor = mysql.connection.cursor()
-        cursor.execute('''
+        cursor.execute(
+            '''
             SELECT p.*, TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age, c.*
             from personal p NATURAL JOIN contact c WHERE pid =
             (SELECT pid from has WHERE uid =
             ( SELECT uid from users WHERE username = %s)) 
-            '''
-            ,[session['username']]
+            ''',
+            [session['username']],
         )
         personal_details = cursor.fetchone()
-        cursor.execute('''
+        cursor.execute(
+            '''
             SELECT COUNT(eid) as count FROM books WHERE uid = 
             (SELECT uid FROM users WHERE username = %s)
-            ''', [session['username']]
+            ''',
+            [session['username']],
         )
         count_event = cursor.fetchone()
-        cursor.execute('''
-            SELECT e.*, b.* FROM event e NATURAL JOIN books b WHERE eid =
+        cursor.execute(
+            '''
+            SELECT e.*, b.* FROM event e NATURAL JOIN books b WHERE e.eid IN
             (SELECT eid FROM books WHERE uid = 
             (SELECT uid FROM users WHERE username = %s ))
-            ''', [session['username']]
+            ''',
+            [session['username']],
         )
         event_details = cursor.fetchall()
         return render_template(
@@ -82,8 +83,8 @@ def dashboard(username):
             name=username,
             pdata=personal_details,
             cn=count_event,
-            events=event_details
-            )
+            events=event_details,
+        )
     return render_template('login.html')
 
 
@@ -92,9 +93,10 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor = mysql.connection.cursor()
         cursor.execute(
-            "SELECT * FROM users WHERE username = %s AND password = MD5(%s)", (username, password)
+            "SELECT * FROM users WHERE username = %s AND password = MD5(%s)",
+            (username, password)
         )
         account = cursor.fetchone()
 
@@ -163,6 +165,7 @@ def logout():
 def book_event(eventname: str):
     if request.method == 'POST':
         ev = request.form
+        person1 = person2 = None
         if eventname == 'birthday':
             person1 = ev['person1']
             etype = 'Birthday'
@@ -177,7 +180,10 @@ def book_event(eventname: str):
         max_people = ev['max']
         date = ev['edate']
         requests = ev['requests']
-        cost = int(max_people)*pricing[eventname][tier]['person'] + pricing[eventname][tier]['base']
+        cost = (
+            int(max_people) * pricing[eventname][tier]['person']
+            + pricing[eventname][tier]['base']
+        )
         if tier == 'tier1':
             tier = 1
         elif tier == 'tier2':
@@ -187,14 +193,25 @@ def book_event(eventname: str):
         elif tier == 'tier4':
             tier = 4
         cursor = mysql.connection.cursor()
-        cursor.execute('''
+        cursor.execute(
+            '''
             INSERT INTO event(etype, edate, etier, ecost, evenue, emax_people, especial)
             VALUES(%s,%s,%s,%s,%s,%s,%s)
-            ''', (etype, date, tier, cost, venue, max_people, requests)
+            ''',
+            (etype, date, tier, cost, venue, max_people, requests),
+        )
+        cursor.execute(
+            '''
+            INSERT INTO books VALUES(
+                (SELECT uid FROM users WHERE username=%s),
+                (SELECT LAST_INSERT_ID()),
+                %s,%s)
+            ''',
+            (session['username'], person1, person2),
         )
         mysql.connection.commit()
         cursor.close()
-        return 'Event Booked!' #Temporary
+        return redirect(url_for('dashboard', username=session['username']))
 
     if eventname in events_available:
         if 'loggedin' in session:
@@ -236,22 +253,74 @@ def personal():
             DOB = request.form['dob']
             contact1 = request.form['contact1']
             contact2 = request.form['contact2']
-            landline = request.form['contact3']
+            contact3 = request.form['contact3']
             gender = request.form['gender']
             address = request.form['address']
             cursor = mysql.connection.cursor()
-            cursor.execute("INSERT INTO personal(fname,mname,lname,dob,contact1,contact2,contact3,gender,address) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s)",(firstname,middlename,lastname,DOB,contact1,contact2,landline,gender,address),)
+            cursor.execute(
+                '''
+                    SELECT * FROM has WHERE uid = 
+                    (SELECT uid FROM users WHERE username = %s)
+                ''', [session['username']]
+            )
+            personal_exists = cursor.fetchone()
+            if personal_exists:
+                cursor.execute('''
+                    UPDATE personal SET
+                    fname=%s,
+                    mname=%s,
+                    lname=%s,
+                    dob=%s,
+                    gender=%s,
+                    address=%s WHERE pid =
+                    (SELECT pid FROM has WHERE uid = 
+                    (SELECT uid FROM users WHERE username=%s))
+                    ''',(firstname, middlename, lastname, DOB, gender.capitalize(), address, session['username'])
+                )
+                cursor.execute('''
+                    UPDATE contact SET
+                    contact1=%s,
+                    contact2=%s,
+                    contact3=%s
+                    WHERE pid=
+                    (SELECT pid FROM has WHERE uid = 
+                    (SELECT uid FROM users WHERE username=%s))
+                    ''', (contact1, contact2, contact3, session['username'])
+                )
+            else:
+                cursor.execute(
+                    '''
+                    INSERT INTO
+                    personal(fname,mname,lname,dob,gender,address) 
+                    VALUES(%s,%s,%s,%s,%s,%s)
+                    ''',
+                    (firstname, middlename, lastname, DOB, gender.capitalize(), address),
+                )
+                cursor.execute(
+                    '''
+                    INSERT INTO contact VALUES(
+                        (SELECT LAST_INSERT_ID()),
+                        %s, %s, %s
+                    )
+                    ''', (contact1, contact2, contact3)
+                )
+                cursor.execute(
+                    '''
+                    INSERT INTO has VALUES(
+                        (SELECT uid FROM users WHERE username=%s),
+                        (SELECT LAST_INSERT_ID())
+                    )
+                    ''', [session['username']]
+                )
             mysql.connection.commit()
             cursor.close()
-
-
+            return redirect(url_for('dashboard', username=session['username']))
         return render_template(
-            'personal.html',
-            session=session['loggedin'],
-            name=session['username'],
+            'personal.html', session=session['loggedin'], name=session['username'],
         )
     else:
         return redirect(url_for('login'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)
