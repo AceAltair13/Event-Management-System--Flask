@@ -20,20 +20,25 @@
       <hr>
     </div>
     <div class='personal'>
-      <h3><strong>Name:</strong> {{ pdata.fname }} {{ pdata.mname }} {{ pdata.lname
+      {% if pdata %}
+       <h3><strong>Name:</strong> {{ pdata.fname }} {{ pdata.mname }} {{
+        pdata.lname
         }}</h3>
-      <h3><strong>Date of Birth:</strong> {{ pdata.dob }}</h3>
-      <h3><strong>Gender:</strong> {{ pdata.gender }}</h3>
-      <h3><strong>Contact:</strong> {{ pdata.contact1 }} 
+       <h3><strong>Date of Birth:</strong> {{ pdata.dob }}</h3>
+       <h3><strong>Gender:</strong> {{ pdata.gender }}</h3>
+       <h3><strong>Contact:</strong> {{ pdata.contact1 }}
         {% if not pdata.contact2 == 0 %}
         / {{ pdata.contact2 }}
         {% endif %}
         {% if not pdata.contact3 == 0 %}
         / {{ pdata.contact3 }}
-        {% endif %} 
+        {% endif %}
       </h3>
       <h3><strong>Address:</strong> {{pdata.address}}</h3>
       <h3><strong>Total Events Booked:</strong> {{ cn.count }}</h3>
+      {% else %}
+      <h3><strong>No Personal Info Found.</strong></h3>
+      {% endif %}
     </div>
     <br>
   </div>
@@ -53,28 +58,29 @@
   <div class="events" name='{{ event.eid }}'>
     <br>
     <h2>
-     {{ event.etype }}
+      {{ event.etype }}
     </h2>
     <h4>
       {% if event.person2 %}
-        Event for: {{ event.person1 }} and {{ event.person2 }}
+      Event for: {{ event.person1 }} and {{ event.person2 }}
       {% elif event.person1 %}
-        Event for: {{ event.person1 }}
+      Event for: {{ event.person1 }}
       {% endif %}
     </h4>
     <h4>
-     Event Date: {{ event.edate }}
+      Event Date: {{ event.edate }}
     </h4>
     <h4>
       Event Location: {{ event.evenue }}
     </h4>
     <h4>
-      Total Cost: {{event.ecost}} | Tier: {{ event.etier }} | Max People: {{ event.emax_people }}
+      Total Cost: {{event.ecost}} | Tier: {{ event.etier }} | Max People: {{
+      event.emax_people }}
     </h4>
     {% if event.especial %}
-      <h4>
-        Special Message: {{ event.especial }}
-      </h4>
+    <h4>
+      Special Request: {{ event.especial }}
+    </h4>
     {% endif %}
     <br>
   </div>
