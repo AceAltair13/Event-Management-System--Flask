@@ -21,40 +21,40 @@
   <form action="" method="POST">
     {% if event == 'Birthday' %}
     <div class="form-group row">
-      <label for="ename" class="col-3 col-form-label">Birthday of</label>
+      <label for="person1" class="col-3 col-form-label">Birthday of</label>
       <div class="col-9">
-        <input id="ename" name="ename" type="text" class="form-control"
+        <input id="person1" name="person1" type="text" class="form-control"
           required="required">
       </div>
     </div>
     {% elif event == 'Anniversary' %}
     <div class="form-group row">
-      <label for="ename" class="col-3 col-form-label">Name of Person 1</label>
+      <label for="person1" class="col-3 col-form-label">Name of Person 1</label>
       <div class="col-9">
-        <input id="ename" name="ename" type="text" class="form-control"
+        <input id="person1" name="person1" type="text" class="form-control"
           required="required">
       </div>
     </div>
     <div class="form-group row">
-      <label for="ename" class="col-3 col-form-label">Name of Person 2</label>
+      <label for="person2" class="col-3 col-form-label">Name of Person 2</label>
       <div class="col-9">
-        <input id="ename" name="ename" type="text" class="form-control"
+        <input id="person2" name="person2" type="text" class="form-control"
           required="required">
       </div>
     </div>
     {% elif event == 'Other' %}
     <div class="form-group row">
-      <label for="ename" class="col-3 col-form-label">Event Name</label>
+      <label for="etype" class="col-3 col-form-label">Event Name</label>
       <div class="col-9">
-        <input id="ename" name="ename" type="text" class="form-control"
+        <input id="etype" name="etype" type="text" class="form-control"
           required="required">
       </div>
     </div>
     {% endif %}
     <div class="form-group row">
-      <label for="textarea" class="col-3 col-form-label">Venue</label>
+      <label for="venue" class="col-3 col-form-label">Venue</label>
       <div class="col-9">
-        <textarea id="textarea" name="textarea" cols="40" rows="3"
+        <textarea id="venue" name="venue" cols="40" rows="3"
           class="form-control"
           required="required"></textarea>
       </div>
@@ -107,13 +107,11 @@
         <button name="submit" type="submit" class="btn btn-primary">Submit</button>
       </div>
     </div>
-    <div class="collapse" id="price_check">
-      <div class="form-group row">
-        <div class="offset-3 col-9">
-          <p>
-            Total price will be: {{ price }}
-          </p>
-        </div>
+    <div class="form-group row">
+      <div class="offset-3 col-9">
+        <p>
+          {{ total_cost }}
+        </p>
       </div>
     </div>
   </form>
