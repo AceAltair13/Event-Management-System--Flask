@@ -95,8 +95,7 @@ def login():
         password = request.form['password']
         cursor = mysql.connection.cursor()
         cursor.execute(
-            "SELECT * FROM users WHERE username = %s AND password = MD5(%s)",
-            (username, password)
+            "SELECT * FROM users WHERE username = %s AND password = MD5(%s)", (username, password)
         )
         account = cursor.fetchone()
 
@@ -181,8 +180,7 @@ def book_event(eventname: str):
         date = ev['edate']
         requests = ev['requests']
         cost = (
-            int(max_people) * pricing[eventname][tier]['person']
-            + pricing[eventname][tier]['base']
+            int(max_people) * pricing[eventname][tier]['person'] + pricing[eventname][tier]['base']
         )
         if tier == 'tier1':
             tier = 1
@@ -261,11 +259,13 @@ def personal():
                 '''
                     SELECT * FROM has WHERE uid = 
                     (SELECT uid FROM users WHERE username = %s)
-                ''', [session['username']]
+                ''',
+                [session['username']],
             )
             personal_exists = cursor.fetchone()
             if personal_exists:
-                cursor.execute('''
+                cursor.execute(
+                    '''
                     UPDATE personal SET
                     fname=%s,
                     mname=%s,
@@ -275,9 +275,19 @@ def personal():
                     address=%s WHERE pid =
                     (SELECT pid FROM has WHERE uid = 
                     (SELECT uid FROM users WHERE username=%s))
-                    ''',(firstname, middlename, lastname, DOB, gender.capitalize(), address, session['username'])
+                    ''',
+                    (
+                        firstname,
+                        middlename,
+                        lastname,
+                        DOB,
+                        gender.capitalize(),
+                        address,
+                        session['username'],
+                    ),
                 )
-                cursor.execute('''
+                cursor.execute(
+                    '''
                     UPDATE contact SET
                     contact1=%s,
                     contact2=%s,
@@ -285,7 +295,8 @@ def personal():
                     WHERE pid=
                     (SELECT pid FROM has WHERE uid = 
                     (SELECT uid FROM users WHERE username=%s))
-                    ''', (contact1, contact2, contact3, session['username'])
+                    ''',
+                    (contact1, contact2, contact3, session['username']),
                 )
             else:
                 cursor.execute(
@@ -302,7 +313,8 @@ def personal():
                         (SELECT LAST_INSERT_ID()),
                         %s, %s, %s
                     )
-                    ''', (contact1, contact2, contact3)
+                    ''',
+                    (contact1, contact2, contact3),
                 )
                 cursor.execute(
                     '''
@@ -310,7 +322,8 @@ def personal():
                         (SELECT uid FROM users WHERE username=%s),
                         (SELECT LAST_INSERT_ID())
                     )
-                    ''', [session['username']]
+                    ''',
+                    [session['username']],
                 )
             mysql.connection.commit()
             cursor.close()
