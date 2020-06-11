@@ -17,10 +17,10 @@
 <div id="edit-form" class='details'>
   <form action="" method="POST">
     <div class="form-group row">
-      <label for="fname" class="col-3 col-form-label">First Name</label>
+      <label for="fname" class="col-3 col-form-label">First Name<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
         <input id="fname" name="fname" type="text" class="form-control"
-          required="required">
+          required>
       </div>
     </div>
     <div class="form-group row">
@@ -30,24 +30,24 @@
       </div>
     </div>
     <div class="form-group row">
-      <label for="lname" class="col-3 col-form-label">Last Name</label>
+      <label for="lname" class="col-3 col-form-label">Last Name<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
         <input id="lname" name="lname" type="text" class="form-control"
-          required="required">
+          required>
       </div>
     </div>
     <div class="form-group row">
-      <label for="dob" class="col-3 col-form-label">Date Of Birth</label>
+      <label for="dob" class="col-3 col-form-label">Date Of Birth<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
         <input id="dob" name="dob" type="date" class="form-control"
-          required="required" onkeydown="return false">
+          required onkeydown="return false">
       </div>
     </div>
     <div class="form-group row">
-      <label for="contact1" class="col-3 col-form-label">Contact Details</label>
+      <label for="contact1" class="col-3 col-form-label">Contact Details<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
-        <input id="contact1" name="contact1" placeholder="Mobile Number 1"
-          type="text" required="required"
+        <input id="contact1" name="contact1"  placeholder="Mobile Number 1"
+          type="text" required
           class="form-control">
       </div>
     </div>
@@ -66,32 +66,32 @@
       </div>
     </div>
     <div class="form-group row">
-      <label class="col-3">Gender</label>
+      <label class="col-3">Gender<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
         <div class="custom-control custom-radio custom-control-inline">
           <input name="gender" id="gender_0" type="radio"
-            class="custom-control-input" value="male" required="required">
+            class="custom-control-input" value="male" required>
           <label for="gender_0" class="custom-control-label">Male</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
           <input name="gender" id="gender_1" type="radio"
             class="custom-control-input" value="female"
-            required="required">
+            required>
           <label for="gender_1" class="custom-control-label">Female</label>
         </div>
         <div class="custom-control custom-radio custom-control-inline">
           <input name="gender" id="gender_2" type="radio"
             class="custom-control-input" value="other"
-            required="required">
+            required>
           <label for="gender_2" class="custom-control-label">Other</label>
         </div>
       </div>
     </div>
     <div class="form-group row">
-      <label for="address" class="col-3 col-form-label">Residential Address</label>
+      <label for="address" class="col-3 col-form-label">Residential Address<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
         <textarea id="address" name="address" cols="40" rows="3"
-          class="form-control" required="required">
+          class="form-control" required>
         </textarea>
       </div>
     </div>
