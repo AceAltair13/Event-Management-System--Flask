@@ -50,7 +50,7 @@ def index():
 @app.route('/users/<username>', methods=['GET', 'POST'])
 def dashboard(username):
     if 'loggedin' in session and username == session['username']:
-        cursor = mysql.connection.cursor()
+        cursor = mysql.connection.cursor() 
         cursor.execute(
             '''
             SELECT p.*, TIMESTAMPDIFF(YEAR, dob, CURDATE()) AS age, c.*
@@ -59,6 +59,8 @@ def dashboard(username):
             ( SELECT uid from users WHERE username = %s)) 
             ''',
             [session['username']],
+
+            
         )
         personal_details = cursor.fetchone()
         cursor.execute(
@@ -67,6 +69,8 @@ def dashboard(username):
             (SELECT uid FROM users WHERE username = %s)
             ''',
             [session['username']],
+
+            
         )
         count_event = cursor.fetchone()
         cursor.execute(
@@ -93,14 +97,15 @@ def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        cursor = mysql.connection.cursor()
+        cursor = mysql.connection.cursor() 
+    
         cursor.execute(
             "SELECT * FROM users WHERE username = %s AND password = MD5(%s)", (username, password)
         )
         account = cursor.fetchone()
 
         if account:
-            last_login = datetime.now()
+            last_login = datetime.now() 
             session['loggedin'] = True
             session['username'] = account['username']
             session['password'] = account['password']
@@ -108,7 +113,7 @@ def login():
                 "UPDATE users SET last_login = %s where username=%s",
                 (last_login, session['username']),
             )
-            mysql.connection.commit()
+            mysql.connection.commit() 
             cursor.close()
             return render_template(
                 'index.html',
@@ -129,7 +134,7 @@ def register():
         username = userDetails['username']
         password = userDetails['password']
         email = userDetails['email']
-        repass = userDetails['reenterPassword']
+        repass = userDetails['reenterPassword'] 
         if password != repass:
             rmsg = "Password does not match!"
             return render_template("register.html", rmsg=rmsg)
@@ -244,6 +249,15 @@ def book_event(eventname: str):
 @app.route('/personal', methods=['GET', 'POST'])
 def personal():
     if 'loggedin' in session:
+        cursor = mysql.connection.cursor()
+        cursor.execute(
+        '''
+        SELECT p.* ,c.*  FROM personal p NATURAL JOIN contact c WHERE pid = (SELECT pid from has where uid = (SELECT uid from users where username=%s))
+        ''',
+        [session['username']],
+        )
+        details = cursor.fetchone()
+        cursor.close()
         if request.method == "POST":
             firstname = request.form['fname']
             middlename = request.form['mname']
@@ -316,6 +330,7 @@ def personal():
                     ''',
                     (contact1, contact2, contact3),
                 )
+               
                 cursor.execute(
                     '''
                     INSERT INTO has VALUES(
@@ -327,9 +342,10 @@ def personal():
                 )
             mysql.connection.commit()
             cursor.close()
+            
             return redirect(url_for('dashboard', username=session['username']))
         return render_template(
-            'personal.html', session=session['loggedin'], name=session['username'],
+            'personal.html', session=session['loggedin'], name=session['username'],details = details
         )
     else:
         return redirect(url_for('login'))

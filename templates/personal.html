@@ -19,27 +19,26 @@
     <div class="form-group row">
       <label for="fname" class="col-3 col-form-label">First Name<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
-        <input id="fname" name="fname" type="text" class="form-control"
-          required>
+        <input id="fname" name="fname" type="text" class="form-control" value="   {{details.fname}}" required>
       </div>
     </div>
     <div class="form-group row">
       <label for="mname" class="col-3 col-form-label">Middle Name</label>
       <div class="col-9">
-        <input id="mname" name="mname" type="text" class="form-control">
+        <input id="mname" name="mname" type="text" class="form-control" value="{{details.mname}}">
       </div>
     </div>
     <div class="form-group row">
       <label for="lname" class="col-3 col-form-label">Last Name<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
-        <input id="lname" name="lname" type="text" class="form-control"
+        <input id="lname" name="lname" type="text" class="form-control" value = "{{details.lname}}"
           required>
       </div>
     </div>
     <div class="form-group row">
       <label for="dob" class="col-3 col-form-label">Date Of Birth<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
-        <input id="dob" name="dob" type="date" class="form-control"
+        <input id="dob" name="dob" type="date" class="form-control" value={{details.dob}}
           required onkeydown="return false">
       </div>
     </div>
@@ -47,7 +46,7 @@
       <label for="contact1" class="col-3 col-form-label">Contact Details<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
         <input id="contact1" name="contact1"  placeholder="Mobile Number 1"
-          type="text" required
+          type="text" value = "{{details.contact1}}" required
           class="form-control">
       </div>
     </div>
@@ -55,13 +54,13 @@
       <label class="col-3"></label>
       <div class="col-9">
         <input id="contact2" name="contact2" placeholder="Mobile Number 2"
-          type="text" class="form-control">
+          type="text" value="{{details.contact2}}" class="form-control">
       </div>
     </div>
     <div class="form-group row">
       <label for="contact3" class="col-3 col-form-label"></label>
       <div class="col-9">
-        <input id="contact3" name="contact3" placeholder="Landline" type="text"
+        <input id="contact3" name="contact3" placeholder="Landline" type="text" value="{{details.contact3}}"
           class="form-control">
       </div>
     </div>
@@ -69,7 +68,7 @@
       <label class="col-3">Gender<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
         <div class="custom-control custom-radio custom-control-inline">
-          <input name="gender" id="gender_0" type="radio"
+          <input name="gender" id="gender_0" type="radio" 
             class="custom-control-input" value="male" required>
           <label for="gender_0" class="custom-control-label">Male</label>
         </div>
@@ -91,7 +90,7 @@
       <label for="address" class="col-3 col-form-label">Residential Address<span class="required" style="color: red;">*</span></label>
       <div class="col-9">
         <textarea id="address" name="address" cols="40" rows="3"
-          class="form-control" required>
+          class="form-control" input value="{{details.address}}" required>{{details.address}}
         </textarea>
       </div>
     </div>
