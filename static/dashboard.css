@@ -1,32 +1,453 @@
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #166088;
+    --accent-color: #4fc3f7;
+    --text-color: #212529;
+    --light-text: #6c757d;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Circular Background Pattern */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><circle cx="50" cy="50" r="45" stroke="rgba(200,200,200,0.2)" stroke-width="1" fill="none"/><circle cx="50" cy="50" r="35" stroke="rgba(200,200,200,0.3)" stroke-width="1" fill="none"/><circle cx="50" cy="50" r="25" stroke="rgba(200,200,200,0.4)" stroke-width="1" fill="none"/><circle cx="50" cy="50" r="15" stroke="rgba(200,200,200,0.5)" stroke-width="1" fill="none"/></svg>');
+    background-repeat: repeat;
+    background-size: 100px 100px;
+    z-index: -1;
+}
+
+/* Modern Card Styles */
+.summary-card, .chart-card, .stat-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: none;
+    overflow: hidden;
+    transition: var(--transition);
+    position: relative;
+    margin-bottom: 24px;
+    padding: 20px;
+}
+
+.summary-card {
+    padding: 20px;
+}
+
+.summary-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+    opacity: 0;
+    transition: var(--transition);
+}
+
+.summary-card:hover::before {
+    opacity: 0.05;
+}
+
+/* Modern Animations */
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    100% { transform: translateY(0); }
+}
+
+.summary-card {
+    animation: float 6s ease-in-out infinite;
+}
+
+/* Glassmorphism Effect */
+.chart-card {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Modern Buttons */
+.btn {
+    border-radius: 8px;
+    padding: 10px 20px;
+    font-weight: 500;
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background: var(--accent-color);
+    opacity: 0.3;
+    transition: var(--transition);
+}
+
+.btn:hover::after {
+    width: 100%;
+}
+
+.btn-danger {
+    background: var(--danger-color);
+    color: white;
+}
+
+.btn-danger:hover {
+    transform: scale(1.02);
+}
+
+/* Modern Table */
+.table-responsive {
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    max-height: 450px;
+}
+
+.table {
+    color: var(--text-color);
+    margin-bottom: 0;
+}
+
+.table th {
+    background: var(--primary-color);
+    color: white;
+    position: sticky;
+    top: 0;
+}
+
+.table-hover tbody tr:hover {
+    background: linear-gradient(90deg, #f8f9fa 0%, #e9ecef 100%);
+    transform: scale(1.01);
+}
+
+/* Search Box Enhancements */
+.search-box input {
+    padding: 12px 24px;
+    border-radius: 30px;
+    border: 2px solid #e9ecef;
+    transition: var(--transition);
+    width: 200px;
+}
+
+.search-box input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(79, 195, 247, 0.2);
+}
+
+/* Modern Card Header */
+.card-header {
+    background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+    color: white;
+    border-radius: 12px 12px 0 0;
+    padding: 16px;
+}
+
+/* Modern Loading Animation */
+@keyframes pulse {
+    0% { opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { opacity: 0.5; }
+}
+
+.skeleton-loader {
+    background: #e9ecef;
+    border-radius: 8px;
+    height: 100%;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Modern Tooltip */
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px;
+    position: absolute;
+    z-index: 1;
+    bottom: 125%;
+    left: 50%;
+    margin-left: -60px;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Modern Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Responsive Enhancements */
+@media (max-width: 992px) {
+    .summary-card, .chart-card, .stat-card {
+        margin-bottom: 16px;
+    }
+    
+    .card-header h3 {
+        font-size: 1rem;
+    }
+}
+
+/* Modern Hover Effects */
+.events, .personal-info {
+    transition: var(--transition);
+}
+
+.events:hover, .personal-info:hover {
+    transform: scale(1.02);
+    box-shadow: var(--shadow);
+}
+
+/* Modern Gradient Borders */
+.welcome {
+    background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+    padding: 32px;
+    border-radius: 20px;
+    margin-bottom: 32px;
+}
+
+/* Modern Stats Card */
+.stat-card h2 {
+    font-size: 28px;
+    animation: numberCount 2s;
+}
+
+@keyframes numberCount {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+/* Modern Button Press Effect */
+.btn:active {
+    transform: scale(0.98);
+}
+
+/* Modern Card Elevation */
+.summary-card, .chart-card, .stat-card {
+    will-change: transform, box-shadow;
+}
+
+/* Modern Hover Effects for Cards */
+.summary-card:hover .card-body {
+    transform: scale(1.02);
+    transition: var(--transition);
+}
+
+/* Modern Color Scheme */
+.badge {
+    font-weight: 600;
+    padding: 0.5em 1em;
+    border-radius: 20px;
+}
+
+.badge.bg-success {
+    background: linear-gradient(to right, #4caf50, #8bc34a);
+}
+
+.badge.bg-warning {
+    background: linear-gradient(to right, #ffc107, #ff9800);
+}
+
+.badge.bg-danger {
+    background: linear-gradient(to right, #f44336, #e57373);
+}
+
+/* Custom Elements */
 .events, .personal-info {
     border-radius: 25px;
     background: linear-gradient(to top, white, whitesmoke);
-    padding-left: 30px; 
-    padding-right: 30px;
-    border: solid;
-    border-color: darkgray;
+    padding: 30px;
+    border: 1px solid darkgray;
+    margin-bottom: 30px;
+    transition: all 0.3s ease;
+}
+
+.events:hover, .personal-info:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transform: translateY(-5px);
 }
 
 .welcome {
     background: whitesmoke;
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 30px;
 }
 
 .no-event {
-    padding-top: 300px;
-    padding-bottom: 300px;
+    padding: 300px 0;
     background: whitesmoke;
     text-align: center;
-    border: solid;
-    border-color: gray;
+    border: 1px solid gray;
     border-radius: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .booking {
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 20px 0;
     text-align: center;
-    border-top: solid;
-    border-bottom: solid;
-    border-color: lightgray;
+    border-top: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
     background-color: whitesmoke;
+}
+
+/* Card Content */
+.summary-card .card-body {
+    padding: 20px;
+    text-align: center;
+}
+
+.summary-card .card-title {
+    font-size: 14px;
+    color: var(--light-text);
+    margin-bottom: 10px;
+}
+
+.summary-card .card-value {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 5px;
+}
+
+.summary-card .card-change {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.card-change.positive {
+    color: var(--success-color);
+}
+
+.card-change.negative {
+    color: var(--danger-color);
+}
+
+/* Chart Cards */
+.chart-card .card-header {
+    background-color: #f8f9fa;
+    padding: 15px 20px;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.chart-card .card-header h3 {
+    margin: 0;
+    font-size: 16px;
+    color: #343a40;
+}
+
+/* Stat Cards */
+.stat-card .card-body {
+    padding: 20px;
+}
+
+.stat-card h5 {
+    font-size: 14px;
+    color: var(--light-text);
+    margin-bottom: 10px;
+}
+
+.stat-card h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text-color);
+    margin-bottom: 0;
+}
+
+/* User Management Table */
+.table-responsive {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Confirm Delete */
+.confirm-delete {
+    cursor: pointer;
+    color: var(--danger-color);
+}
+
+/* Main Container */
+.container-fluid.welcome {
+    padding: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .summary-card {
+        margin-bottom: 15px;
+    }
+    
+    .chart-card {
+        margin-bottom: 15px;
+    }
+    
+    .stat-card {
+        margin-bottom: 15px;
+    }
+    
+    .card-header h3 {
+        font-size: 14px;
+    }
 }
