@@ -99,6 +99,13 @@
         <span id="requestsHelpBlock" class="form-text text-muted">Optional</span>
       </div>
     </div>
+    {% if error_message %}
+    <div class="form-group row">
+      <div class="offset-3 col-9">
+        <div class="alert alert-danger">{{ error_message }}</div>
+      </div>
+    </div>
+    {% endif %}
     <div class="form-group row">
       <div class="offset-3 col-9">
         <button name="submit" type="submit" class="btn btn-primary">Submit</button>

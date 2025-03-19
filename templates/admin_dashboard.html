@@ -1,0 +1,497 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='dashboard.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid welcome">
+    <div class="container">
+        <br><br><br>
+        <div class="d-flex justify-content-between align-items-center">
+            <h1>Admin Dashboard</h1>
+            <div>
+                <a class="btn btn-danger me-2" href='/admin/logout'>Logout</a>
+                <a class="btn btn-success me-2" href='/home'>Home</a>
+            </div>
+        </div>
+        <hr>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-xl-3 col-md-6">
+                <div class="card summary-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Users</h5>
+                        <h2 class="card-value">{{ total_users }}</h2>
+                        <p class="card-change positive">{{ user_growth }}%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card summary-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Events</h5>
+                        <h2 class="card-value">{{ total_events }}</h2>
+                        <p class="card-change positive">{{ event_growth }}%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card summary-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Revenue</h5>
+                        <h2 class="card-value">{{ total_revenue }}</h2>
+                        <p class="card-change positive">{{ revenue_growth }}%</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="card summary-card">
+                    <div class="card-body">
+                        <h5 class="card-title">Average Event Cost</h5>
+                        <h2 class="card-value">{{ avg_event_cost }}</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Additional Stats Row -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <h5>New Users (Last 7 Days)</h5>
+                        <h2>{{ users_last_7_days }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <h5>Events Booked Last Month</h5>
+                        <h2>{{ events_last_month }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <h5>Average Event Duration</h5>
+                        <h2>{{ avg_event_duration }} days</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Advanced Stats Row -->
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <h5>Completed Events</h5>
+                        <h2>{{ completed_events }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <h5>Pending Events</h5>
+                        <h2>{{ pending_events }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card stat-card">
+                    <div class="card-body">
+                        <h5>Average Booking Time</h5>
+                        <h2>{{ avg_booking_time }} hours</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="row mb-4">
+            <div class="col-lg-8">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>Event Bookings Over Time</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="bookingsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>Revenue by Event Type</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- New Charts Row -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>User Registrations Over Time</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="userRegistrationsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card chart-card">
+                    <div class="card-header">
+                        <h3>Event Completion Status</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="eventStatusChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Top Events and Recent Registrations -->
+        <div class="row mb-4">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Top 5 Most Booked Events</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Event Type</th>
+                                        <th>Bookings</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for event in top_events %}
+                                    <tr>
+                                        <td>{{ event.etype }}</td>
+                                        <td>{{ event.count }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Registrations</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Username</th>
+                                        <th>Last Login</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in recent_users %}
+                                    <tr>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.last_login }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Events Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3>Recent Events</h3>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Event ID</th>
+                                        <th>Event Type</th>
+                                        <th>Date</th>
+                                        <th>Venue</th>
+                                        <th>Status</th>
+                                        <th>Booked By</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for event in recent_events %}
+                                    <tr>
+                                        <td>{{ event.eid }}</td>
+                                        <td>{{ event.etype }}</td>
+                                        <td>{{ event.edate }}</td>
+                                        <td>{{ event.evenue }}</td>
+                                        <td>
+                                            {% if event.status == 'completed' %}
+                                            <span class="badge bg-success">{{ event.status }}</span>
+                                            {% elif event.status == 'pending' %}
+                                            <span class="badge bg-warning">{{ event.status }}</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">{{ event.status }}</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ event.username }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Management Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center flex-wrap">
+                        <h3>User Management</h3>
+                        <div class="search-filter-container d-flex align-items-center">
+                            <div class="search-box me-3">
+                                <input type="text" class="form-control" id="userSearch" placeholder="Search users...">
+                            </div>
+                            <div class="filter-box">
+                                <select class="form-select" id="userFilter" style="width: 150px;">
+                                    <option value="all">All Users</option>
+                                    <option value="user">Users</option>
+                                    <option value="admin">Admins</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="userTable">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Username</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Last Login</th>
+                                        <th>Events Booked</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for user in users %}
+                                    <tr>
+                                        <td>{{ user.uid }}</td>
+                                        <td>{{ user.username }}</td>
+                                        <td>{{ user.email }}</td>
+                                        <td>{{ user.role }}</td>
+                                        <td>{{ user.last_login }}</td>
+                                        <td>{{ user.event_count }}</td>
+                                        <td>
+                                            <form method="POST" action="/admin/delete_user" class="d-inline">
+                                                <input type="hidden" name="user_id" value="{{ user.uid }}">
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?')">
+                                                    <i class="material-icons">delete</i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Safely parse JSON data
+        const bookingsLabels = JSON.parse('{{ bookings_labels | tojson | safe }}');
+        const bookingsData = JSON.parse('{{ bookings_data | tojson | safe }}');
+        const revenueLabels = JSON.parse('{{ revenue_labels | tojson | safe }}');
+        const revenueData = JSON.parse('{{ revenue_data | tojson | safe }}');
+        const userRegLabels = JSON.parse('{{ user_reg_labels | tojson | safe }}');
+        const userRegData = JSON.parse('{{ user_reg_data | tojson | safe }}');
+        const eventStatusLabels = JSON.parse('{{ event_status_labels | tojson | safe }}');
+        const eventStatusData = JSON.parse('{{ event_status_data | tojson | safe }}');
+
+        // Event bookings over time chart
+        const bookingsCtx = document.getElementById('bookingsChart').getContext('2d');
+        new Chart(bookingsCtx, {
+            type: 'line',
+            data: {
+                labels: bookingsLabels,
+                datasets: [{
+                    label: 'Bookings',
+                    data: bookingsData,
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    tension: 0.1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { 
+                        display: true,
+                        text: 'Event Bookings Over Time'
+                    }
+                }
+            }
+        });
+
+        // Revenue by event type chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'doughnut',
+            data: {
+                labels: revenueLabels,
+                datasets: [{
+                    data: revenueData,
+                    backgroundColor: [
+                        '#FF6384',
+                        '#36A2EB',
+                        '#FFCE56',
+                        '#4BC0C0',
+                        '#9966FF'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'right' },
+                    title: {
+                        display: true,
+                        text: 'Revenue by Event Type'
+                    }
+                }
+            }
+        });
+
+        // User registrations over time chart
+        const userRegCtx = document.getElementById('userRegistrationsChart').getContext('2d');
+        new Chart(userRegCtx, {
+            type: 'bar',
+            data: {
+                labels: userRegLabels,
+                datasets: [{
+                    label: 'New Users',
+                    data: userRegData,
+                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'top' },
+                    title: { 
+                        display: true,
+                        text: 'User Registrations Over Time'
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Event status chart
+        const eventStatusCtx = document.getElementById('eventStatusChart').getContext('2d');
+        new Chart(eventStatusCtx, {
+            type: 'pie',
+            data: {
+                labels: eventStatusLabels,
+                datasets: [{
+                    data: eventStatusData,
+                    backgroundColor: [
+                        '#28a745',  // Completed (green)
+                        '#ffc107',  // Pending (yellow)
+                        '#6c757d'   // Other (gray)
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { position: 'right' },
+                    title: {
+                        display: true,
+                        text: 'Event Completion Status'
+                    }
+                }
+            }
+        });
+
+        // User search and filter functionality
+        const searchInput = document.getElementById('userSearch');
+        const filterSelect = document.getElementById('userFilter');
+        const userTable = document.getElementById('userTable').getElementsByTagName('tbody')[0];
+        const rows = userTable.getElementsByTagName('tr');
+
+        function filterUsers() {
+            const searchTerm = searchInput.value.toLowerCase();
+            const filterValue = filterSelect.value;
+            
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const username = row.cells[1].textContent.toLowerCase();
+                const email = row.cells[2].textContent.toLowerCase();
+                const role = row.cells[3].textContent.toLowerCase();
+                
+                let matchSearch = false;
+                if (searchTerm === '') {
+                    matchSearch = true;
+                } else if (username.includes(searchTerm) || email.includes(searchTerm)) {
+                    matchSearch = true;
+                }
+                
+                let matchFilter = false;
+                if (filterValue === 'all') {
+                    matchFilter = true;
+                } else if (role === filterValue) {
+                    matchFilter = true;
+                }
+                
+                row.style.display = matchSearch && matchFilter ? '' : 'none';
+            }
+        }
+
+        searchInput.addEventListener('keyup', filterUsers);
+        filterSelect.addEventListener('change', filterUsers);
+    });
+</script>
+{% endblock %}

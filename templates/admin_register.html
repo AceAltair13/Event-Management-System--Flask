@@ -6,15 +6,15 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
-    <title>Alpha | Register</title>
+    <title>Alpha | Admin Register</title>
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sign-in/">
     <link href="https://getbootstrap.com/docs/4.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/signin.css" rel="stylesheet">
 </head>
 <body class="text-center">
-    <form class="form-signin" method="POST" action="/register">
+    <form class="form-signin" method="POST" action="/admin/register">
         <img class="mb-4" src='/static/baseline_spa_black_48dp.png' alt="logo" width="72" height="72">
-        <h1 class="h3 mb-3 font-weight-normal">Register | Alpha Events</h1>
+        <h1 class="h3 mb-3 font-weight-normal">Register Admin | Alpha Events</h1>
         <label for="username" class="sr-only">Username</label>
         <input type="text" name="username" class="form-control" placeholder="Username" required autofocus>
         <label for="email" class="sr-only">Email address</label>
@@ -23,10 +23,9 @@
         <input type="password" name="password" class="form-control" placeholder="Password" required>
         <label for="reenterPassword" class="sr-only">Re-Enter Password</label>
         <input type="password" name="reenterPassword" class="form-control" placeholder="Re-Enter Password" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin-top: 15px">Register</button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" style="margin-top: 15px">Register Admin</button>
         <p class="register_message">{{ rmsg }}</p>
-        <p>Already have an account? <a href="/login">Login Here</a></p>
-        <p>Are you an admin? <a href="/admin/register">Admin Registration</a></p>
+        <p>Already have an admin account? <a href="/admin/login">Login Here</a></p>
         <p class="mt-5 mb-3 text-muted">&copy; Alpha Events</p>
     </form>
 </body>
